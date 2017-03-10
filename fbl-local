@@ -1,0 +1,15 @@
+#!/bin/bash
+
+cd /var/www/html/fbl
+
+perl -pi -e 's/\#RewriteBase \/magento\//RewriteBase \//g' .htaccess
+perl -pi -e 's/true/false/g' app/etc/modules/Cm_RedisSession.xml
+perl -pi -e 's/true/false/g' app/etc/modules/EbayEnterprise_MageLog.xml
+
+rm -f customer.php
+
+git update-index --assume-unchanged .htaccess
+git update-index --assume-unchanged customer.php
+git update-index --assume-unchanged app/etc/modules/Cm_RedisSession.xml
+git update-index --assume-unchanged app/etc/modules/EbayEnterprise_MageLog.xml
+

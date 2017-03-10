@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [ -z "$1" ]; then
+  nohup $0 go &
+  exit 0
+fi
+
+while [ 1 ];
+do
+  ~/bin/php-error-notifier
+  sleep 1
+done

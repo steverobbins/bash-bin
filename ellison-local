@@ -1,0 +1,23 @@
+#!/bin/bash
+
+DOC_ROOT=/Users/steve/html/ellison
+
+#rm -rf $DOC_ROOT/var
+#rm -rf $DOC_ROOT/media/catalog/product/cache
+
+#ln -s /var/tmp/ellison/var $DOC_ROOT/var
+#ln -s /var/tmp/ellison/media/catalog/product/cache $DOC_ROOT/media/catalog/product/cache
+
+echo '
+/var' >> $DOC_ROOT/.gitignore
+
+perl -pi -e 's/true/false/g' app/etc/modules/SDM_ConflictResolution.xml
+perl -pi -e 's/\<SFC_CyberSource \/\>/\<\!\-\- SFC_CyberSource \/ \-\-\>/g' app/etc/modules/SDM_Customer.xml
+perl -pi -e 's/true/false/g' app/etc/modules/SFC_CyberSource.xml
+
+git update-index --assume-unchanged .htaccess
+git update-index --assume-unchanged .gitignore
+git update-index --assume-unchanged app/etc/modules/SDM_ConflictResolution.xml
+git update-index --assume-unchanged app/etc/modules/SDM_Customer.xml
+git update-index --assume-unchanged app/etc/modules/SFC_CyberSource.xml
+git update-index --assume-unchanged var/.htaccess

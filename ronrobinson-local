@@ -1,0 +1,44 @@
+#!/bin/bash
+
+DIR=~/Project/ronrobinson/repo
+cd "$DIR"
+
+# Undo unindexed changes so git doesn't complain
+git checkout src/magento/.htaccess src/magento/app/etc/local.xml
+
+# Get the latest remove branches
+git remote update
+
+# Check all of them out
+for branch in $(git branch --all | grep '^\s*remotes' | egrep --invert-match '(:?HEAD|master)$'); do
+    git branch --track "${branch##*/}" "$branch"
+done
+
+# If anything fails from here stop the script
+set -e
+
+# Update all local branches
+git up
+
+# Compile frontend
+cd src/magento/skin/frontend/uftd/default/anatta-frontend-starter
+gulp dev
+
+# Update DB base url, db in local.xml, etc
+if [ -n "$1" ]; then
+    cd "$DIR/src/magento"
+    mage-local.py ronrobinson "$1"
+fi
+
+cd "$DIR"
+
+# Not sure why we're getting this error, just ignore it
+perl -pi -e 's/\/\/ Return true if and only if all parts of the URI have passed validation/return true;/g' src/magento/lib/Zend/Uri/Http.php
+
+# Make rewrites work for local
+perl -pi -e 's/\#RewriteBase \/magento\//RewriteBase \//g' src/magento/.htaccess
+
+# Don't accidentally push changes that are just for local env
+git update-index --assume-unchanged src/magento/.htaccess
+git update-index --assume-unchanged src/magento/app/etc/local.xml
+git update-index --assume-unchanged src/magento/lib/Zend/Uri/Http.php

@@ -1,0 +1,39 @@
+#!/bin/bash
+
+SOURCE=/Volumes/Session0/DCIM
+DEST=/Volumes/HomeVideo
+DRY=$1
+
+if [ ! -d "$SOURCE" ]; then
+  echo "Source directory '$SOURCE' does not exist"
+  exit 1
+fi
+
+if [ ! -d "$DEST" ]; then
+  echo "Destination directory '$DEST' does not exist"
+  exit 1
+fi
+
+if [ -z "$DRY" ]; then
+  echo "################################################"
+  echo "# DRY RUN ... Pass an argument to run for real #"
+  echo "################################################"
+  sleep 1
+fi
+
+find "$SOURCE" -type f \( -name "*.JPG" -or -name "*.MP4" \) -print0 | while IFS= read -r -d $'\0' FILE; do
+  TIME=$(stat -f "%Sm" -t "%Y%m%d-%H%M%S" "$FILE")
+  BASE=$(basename "$FILE")
+  EXT="${BASE##*.}"
+  RANDOM=$(( ( RANDOM % 10000 ) + 1 ))
+  NEW="$DEST/$TIME-$RANDOM.$EXT"
+  echo "Copying $FILE to $NEW"
+  if [ ! -z "$DRY" ]; then
+    rsync --progress "$FILE" "$NEW"
+    if [ $? -ne 0 ]; then
+      echo "An error occured when copying the file"
+      exit 1
+    fi
+  fi
+done
+

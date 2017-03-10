@@ -1,0 +1,14 @@
+#!/bin/bash
+
+PDIR=/Users/steve
+
+touch $PDIR/_ref.php_error.log
+
+DIFF=`diff $PDIR/_ref.php_error.log $PDIR/php_error.log | grep -v "^[0-9c0-9]" | grep -v "^<" | sed -e 's/^.*Berlin\] //g' | sed -e 's/^.*UTC\] //g' | grep -v "^>" | grep -v "\-\-\-" `
+
+if [ ! -z "$DIFF" ]; then
+#  say -r 300 -v Daniel "$DIFF" &
+  terminal-notifier -title 'PHP Error' -message "$DIFF" &
+fi
+
+cat $PDIR/php_error.log > $PDIR/_ref.php_error.log

@@ -1,0 +1,29 @@
+#!/bin/bash
+
+BIN_CURL=$(which curl)
+FILE_IP=/Users/steve/Dropbox/ip-home.txt
+URL_DETECT=icanhazip.com
+
+echo "Config values:
+  curl bin:      $BIN_CURL
+  ip file:       $FILE_IP
+  detection url: $URL_DETECT
+"
+
+IP_OLD=$(cat "$FILE_IP")
+
+echo "Current IP:  $IP_OLD"
+
+IP_NEW=$($BIN_CURL -sS "$URL_DETECT" 2>/dev/null)
+
+echo "Detected IP: $IP_NEW"
+
+if [ ! -z "$IP_NEW" ] && [ "$IP_NEW" != "$IP_OLD" ]; then
+  echo "Updating..."
+  echo "$IP_NEW" > "$FILE_IP"
+else
+  echo "Detected IP was empty or unchanged"
+fi
+
+echo "Done"
+
