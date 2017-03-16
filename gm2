@@ -1,0 +1,19 @@
+#!/bin/bash
+
+set -e
+
+if [ -z "$1" ]; then
+    echo "Usage: gm2 [bracne]"
+    echo
+    echo "Takes the current branch, merges it into the destination branch, and pushes it"
+    exit 1
+fi
+
+BRANCH=$(git symbolic-ref -q HEAD)
+BRANCH=${BRANCH##refs/heads/}
+BRANCH=${BRANCH:-HEAD}
+
+git checkout "$1"
+
+git merge --no-edit "$BRANCH"
+git push origin master
