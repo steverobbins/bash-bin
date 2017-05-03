@@ -16,4 +16,4 @@ BRANCH=${BRANCH:-HEAD}
 git checkout "$1"
 
 git merge --no-edit "$BRANCH"
-git push origin master
+git push origin "$1"

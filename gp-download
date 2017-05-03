@@ -1,7 +1,8 @@
 #!/bin/bash
 
 SOURCE=/Volumes/Session0/DCIM
-DEST=/Volumes/HomeVideo
+#DEST=/Volumes/HomeVideo
+DEST=/Users/steve/Desktop
 DRY=$1
 
 if [ ! -d "$SOURCE" ]; then

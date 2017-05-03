@@ -1,0 +1,6 @@
+#!/bin/bash
+
+read -s -p "Password: " PASS
+echo
+
+echo $1 | openssl enc -aes-128-cbc -a -d -salt -pass pass:$PASS
