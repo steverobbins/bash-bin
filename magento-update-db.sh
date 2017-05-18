@@ -25,9 +25,9 @@ if ! grep -q "Host $PROJECT.$ENV" ~/.ssh/config ; then
     exit 3
 fi
 
-HOST=$(grep "Host $PROJECT.$ENV" ~/.ssh/config | awk '{print $2}')
+HOST=$(grep "Host $PROJECT.$ENV" ~/.ssh/config | awk '{print $2}' | xargs | awk '{print $1}')
 DATETIME=`date -u +"%Y%m%d%H%M"`
-#DATETIME=201705031753
+#DATETIME=20170510
 
 ssh "$HOST" bash -c "'
 if [ ! -d backup ]; then
@@ -39,8 +39,10 @@ if [ ! -d bin ]; then
 fi
 
 if [ ! -f bin/magento-backup.sh ]; then
-  curl -o bin/magento-backup.sh https://gist.github.com/steverobbins/b68308b7323d53664f72/raw/e10a8ea4107f2ace189f193661911fd75391a553/magento-backup.sh
-  chmod +x bin/magento-backup.sh
+  cd bin
+  wget https://gist.github.com/steverobbins/b68308b7323d53664f72/raw/e10a8ea4107f2ace189f193661911fd75391a553/magento-backup.sh
+  chmod +x magento-backup.sh
+  cd ..
 fi
 
 if [ -d public ]; then
@@ -60,7 +62,7 @@ fi
 '"
 
 if [ ! -d ~/Project/$PROJECT/db ]; then
-  mkdir ~/Project/$PROJECT/db
+  mkdir -p ~/Project/$PROJECT/db
 fi
 
 cd ~/Project/$PROJECT/db
