@@ -1,0 +1,45 @@
+#!/bin/bash
+
+set -e
+
+REMOTE_IP=`curl -sS icanhazip.com`
+IS_AUTHORIZED=0
+
+echo "Your IP: $REMOTE_IP"
+
+function getCurrentIps
+{
+    CURRENT_IPS=`aws --profile self ec2 describe-security-groups --group-ids $BASTION_SG | jq '.SecurityGroups[0].IpPermissions[0].IpRanges[] | .CidrIp' | xargs`
+}
+
+function isCurrentIpAuthorized
+{
+    if [[ $CURRENT_IPS == *"$REMOTE_IP"* ]]; then
+        echo "IP is authorized"
+        IS_AUTHORIZED=1
+    else
+        echo "IP not authorized"
+        IS_AUTHORIZED=0
+    fi
+}
+
+getCurrentIps
+
+echo "Authorized IPs: $CURRENT_IPS"
+
+isCurrentIpAuthorized
+
+if [ $IS_AUTHORIZED == 1 ]; then
+    exit 0
+fi
+
+echo "Adding your IP..."
+
+aws --profile self ec2 authorize-security-group-ingress --group-id $BASTION_SG --protocol tcp --port 22 --cidr "$REMOTE_IP/32"
+
+getCurrentIps
+isCurrentIpAuthorized
+
+if [ $IS_AUTHORIZED == 0 ]; then
+    exit 1
+fi
