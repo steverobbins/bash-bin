@@ -1,1 +1,1 @@
-/Applications/MAMP/bin/php/php5.6.10/bin/php
+php-7.0

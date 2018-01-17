@@ -1,0 +1,4 @@
+#!/bin/bash
+
+perl -pi -e 's/\->\$callback\[1\]\(/->\{\$callback[1]\}(/g' app/code/core/Mage/Core/Model/Layout.php
+git update-index --assume-unchanged app/code/core/Mage/Core/Model/Layout.php

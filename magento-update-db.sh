@@ -15,6 +15,12 @@ fi
 PROJECT=$1
 ENV=$2
 
+if [ -z "$3" ]; then
+  DB_NAME=$ENV
+else
+  DB_NAME=$3
+fi
+
 if [ ! -e ~/html/$PROJECT ]; then
   echo "Project html directory doesn't exist"
   exit 4
@@ -25,9 +31,9 @@ if ! grep -q "Host $PROJECT.$ENV" ~/.ssh/config ; then
     exit 3
 fi
 
-HOST=$(grep "Host $PROJECT.$ENV" ~/.ssh/config | awk '{print $2}' | xargs | awk '{print $1}')
+HOST=$(grep "Host $PROJECT.$ENV" ~/.ssh/config | grep -v '#' | awk '{print $2}' | xargs | awk '{print $1}')
 DATETIME=`date -u +"%Y%m%d%H%M"`
-#DATETIME=20170510
+#DATETIME=201711292226
 
 ssh "$HOST" bash -c "'
 if [ ! -d backup ]; then
@@ -57,7 +63,7 @@ if [ -d html ]; then
   cd html
 fi
 
-~/bin/magento-backup.sh -m db -o ~/backup/ -n $PROJECT.$ENV.magento.$DATETIME
+~/bin/magento-backup.sh -m db -o ~/backup/ -n $PROJECT.$DB_NAME.magento.$DATETIME
 
 '"
 
@@ -67,14 +73,14 @@ fi
 
 cd ~/Project/$PROJECT/db
 
-scp $HOST:backup/$PROJECT.$ENV.magento.$DATETIME.sql.gz ./
+scp $HOST:backup/$PROJECT.$DB_NAME.magento.$DATETIME.sql.gz ./
 
-gzip -d $PROJECT.$ENV.magento.$DATETIME.sql.gz
+gzip -d $PROJECT.$DB_NAME.magento.$DATETIME.sql.gz
 
-mysql -e "create database ${PROJECT}_${ENV}_magento_${DATETIME}"
-mysql ${PROJECT}_${ENV}_magento_${DATETIME} < $PROJECT.$ENV.magento.$DATETIME.sql
+mysql -e "create database ${PROJECT}_${DB_NAME}_magento_${DATETIME}"
+mysql ${PROJECT}_${DB_NAME}_magento_${DATETIME} < $PROJECT.$DB_NAME.magento.$DATETIME.sql
 
-gzip $PROJECT.$ENV.magento.$DATETIME.sql &
+gzip $PROJECT.$DB_NAME.magento.$DATETIME.sql &
 
 cd ~/html/$PROJECT
-~/bin/mage-local.py $PROJECT ${PROJECT}_${ENV}_magento_${DATETIME}
+~/bin/mage-local.py $PROJECT ${PROJECT}_${DB_NAME}_magento_${DATETIME}
