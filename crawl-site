@@ -1,0 +1,26 @@
+#!/bin/bash
+
+set -e
+
+URL=$1
+THREADS=$2
+
+if [ -z "$URL" ]; then
+    echo "Please specify a URL"
+    echo
+    echo "Usage: crawl-site https://example.com/ 10"
+    exit 1
+fi
+
+if [ -z "$THREADS" ]; then
+    echo "Please specify the number of threads"
+    echo
+    echo "Usage: crawl-site https://example.com/ 10"
+    exit 1
+fi
+
+cd /tmp
+
+for ((n=0; n < $THREADS; n++)); do
+    wget --reject-regex "(.*)(\?|js|skin|media)(.*)" -nc --spider -r $URL > /dev/null 2>&1 &
+done

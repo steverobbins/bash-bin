@@ -7,9 +7,13 @@ if [ -z "$VOLUME" ]; then
   exit 1
 fi
 
-SOURCE=/Volumes/$VOLUME/DCIM
-#DEST=/Volumes/HomeVideo
 DEST=/Users/steve/Desktop
+
+if [ ! -z "$2" ]; then
+  DEST=$2
+fi
+
+SOURCE=/Volumes/$VOLUME/DCIM
 
 if [ ! -d "$SOURCE" ]; then
   echo "Source directory '$SOURCE' does not exist"
@@ -34,4 +38,3 @@ find "$SOURCE" -type f \( -name "*.JPG" -or -name "*.MP4" \) -print0 | while IFS
     exit 1
   fi
 done
-

@@ -1,0 +1,3 @@
+#!/bin/bash
+
+rm -rf ~/Applications/GoToMeeting* ~/Library/Application\ Support/GoToOpener/

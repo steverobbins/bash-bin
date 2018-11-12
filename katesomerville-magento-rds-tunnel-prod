@@ -1,0 +1,3 @@
+#!/bin/bash
+
+ssh -N -L 3307:katesomerville-magento-prod.cmo80g0eyqzd.us-east-1.rds.amazonaws.com:3306 katesomerville.prod2.worker.ubuntu

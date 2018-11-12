@@ -5,7 +5,7 @@ import sys
 import re
 
 bin_vbox = '/usr/local/bin/VBoxManage'
-box = 'archiveteam-warrior-2'
+box = 'archiveteam-warrior-3'
 
 def main():
     state = getState()

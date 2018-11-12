@@ -1,0 +1,3 @@
+#!/bin/bash
+
+ssh -N -L 3307:lojistic-stage.c41j1uwvu70d.us-east-1.rds.amazonaws.com:3306 lojistic.marketing.stage2.ubuntu

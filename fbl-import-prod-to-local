@@ -3,7 +3,7 @@
 set -e
 
 DATETIME=`date -u +"%Y%m%d%H%M"`
-#DATETIME=201709011608
+#DATETIME=201810152015
 
 ssh fbl.prod.web1.srobbins "
 cd /var/www/vhosts/flashingblinkylights.com/current/

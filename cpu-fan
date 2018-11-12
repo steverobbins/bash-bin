@@ -1,0 +1,13 @@
+#!/bin/bash
+
+CPU_C=`osx-cpu-temp -C -c`
+CPU_F=`osx-cpu-temp -F -c`
+
+GPU_C=`osx-cpu-temp -C -g`
+GPU_F=`osx-cpu-temp -F -g`
+
+echo "CPU temp: $CPU_C $CPU_F"
+
+echo "GPU temp: $GPU_C $CPU_F"
+
+osx-cpu-temp -f
