@@ -4,7 +4,7 @@ import subprocess
 import sys
 import re
 
-bin_vbox = '/usr/local/bin/VBoxManage'
+bin_vbox = '/usr/bin/VBoxManage'
 box = 'archiveteam-warrior-3'
 
 def main():

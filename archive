@@ -1,1 +1,5 @@
-/Users/steve/Project/archiver/archive.sh
+#!/bin/bash
+
+curl -i -sS --location --request POST "https://web.archive.org/save/$1" \
+--form "url=\"$1\"" \
+--form 'capture_all="on"' | head

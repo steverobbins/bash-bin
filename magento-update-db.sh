@@ -32,52 +32,50 @@ if ! grep -q "Host $PROJECT.$ENV" ~/.ssh/config ; then
 fi
 
 HOST=$(grep "Host $PROJECT.$ENV" ~/.ssh/config | grep -v '#' | awk '{print $2}' | xargs | awk '{print $1}')
-DATETIME=`date -u +"%Y%m%d%H%M"`
-#DATETIME=201711292226
 
-ssh "$HOST" bash -c "'
-if [ ! -d backup ]; then
-  mkdir backup
+if [ -z "$4" ]; then
+  DATETIME=`date -u +"%Y%m%d%H%M"`
+  ssh "$HOST" bash -c "'
+  if [ ! -d backup ]; then
+    mkdir backup
+  fi
+
+  if [ ! -d bin ]; then
+    mkdir bin
+  fi
+
+  if [ -d public ]; then
+    cd public
+  fi
+
+  if [ -d public_html ]; then
+    cd public_html
+  fi
+
+  if [ -d html ]; then
+    cd html
+  fi
+
+  ~/bin/magento-backup.sh -m db -o ~/backup/ -n $PROJECT.$DB_NAME.magento.$DATETIME
+
+  '"
+
+  if [ ! -d ~/Project/$PROJECT/db ]; then
+    mkdir -p ~/Project/$PROJECT/db
+  fi
+
+  cd ~/Project/$PROJECT/db
+else
+  DATETIME=$4
 fi
 
-if [ ! -d bin ]; then
-  mkdir bin
+if [ -z "$5" ]; then
+  scp $HOST:backup/$PROJECT.$DB_NAME.magento.$DATETIME.sql.gz ./
 fi
 
-if [ ! -f bin/magento-backup.sh ]; then
-  cd bin
-  wget https://gist.github.com/steverobbins/b68308b7323d53664f72/raw/e10a8ea4107f2ace189f193661911fd75391a553/magento-backup.sh
-  chmod +x magento-backup.sh
-  cd ..
-fi
+gzip -d $PROJECT.$DB_NAME.magento.$DATETIME.sql.gz > /dev/null || echo
 
-if [ -d public ]; then
-  cd public
-fi
-
-if [ -d public_html ]; then
-  cd public_html
-fi
-
-if [ -d html ]; then
-  cd html
-fi
-
-~/bin/magento-backup.sh -m db -o ~/backup/ -n $PROJECT.$DB_NAME.magento.$DATETIME
-
-'"
-
-if [ ! -d ~/Project/$PROJECT/db ]; then
-  mkdir -p ~/Project/$PROJECT/db
-fi
-
-cd ~/Project/$PROJECT/db
-
-scp $HOST:backup/$PROJECT.$DB_NAME.magento.$DATETIME.sql.gz ./
-
-gzip -d $PROJECT.$DB_NAME.magento.$DATETIME.sql.gz
-
-mysql -e "create database ${PROJECT}_${DB_NAME}_magento_${DATETIME}"
+mysql -e "create database if not exists ${PROJECT}_${DB_NAME}_magento_${DATETIME}"
 mysql ${PROJECT}_${DB_NAME}_magento_${DATETIME} < $PROJECT.$DB_NAME.magento.$DATETIME.sql
 
 gzip $PROJECT.$DB_NAME.magento.$DATETIME.sql &

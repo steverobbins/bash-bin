@@ -1,0 +1,23 @@
+#!/bin/bash
+
+set -x
+
+DATETIME=`date -u +"%Y%m%d"`
+
+mkdir -p "/media/steve/storage/$DATETIME"
+cd "/media/steve/storage/$DATETIME"
+
+rsync -avP ~/.asciinema ./
+rsync -avP ~/.ssh ./
+rsync -avP ~/.cert ./
+rsync -avP ~/.gnome ./
+rsync -avP ~/.vim ./
+rsync -avP ~/.aws ./
+rsync -avP ~/.config ./
+
+rsync -avP ~/bin ./
+rsync -avP ~/Project ./
+rsync -avP ~/html ./
+rsync -avP ~/Downloads ./
+rsync -avP ~/Pictures ./
+rsync -avP ~/Videos ./

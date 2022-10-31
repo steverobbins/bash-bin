@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -ex
+git stash
+git checkout master -b "$1"
+git stash pop

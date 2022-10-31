@@ -1,0 +1,11 @@
+#!/bin/bash
+
+FILE=/tmp/switch-screen
+
+if test -f "$FILE"; then
+    wmctrl -s 0
+    rm -f $FILE
+else
+    wmctrl -s 1
+    touch $FILE
+fi

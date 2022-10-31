@@ -1,0 +1,37 @@
+#!/bin/bash
+
+LEFT=0
+TOP=0
+WIDTH=1920
+HEIGHT=1080
+
+# LEFT=0
+# TOP=320
+# WIDTH=1920
+# HEIGHT=1080
+
+if [ ! -z "$1" ]; then
+    LEFT=$1
+fi
+
+if [ ! -z "$2" ]; then
+    TOP=$2
+fi
+
+if [ ! -z "$3" ]; then
+    WIDTH=$3
+fi
+
+if [ ! -z "$4" ]; then
+    HEIGHT=$4
+fi
+
+vlc \
+    --no-video-deco \
+    --no-embedded-video \
+    --screen-fps=20 \
+    --screen-top=$TOP \
+    --screen-left=$LEFT \
+    --screen-width=$WIDTH \
+    --screen-height=$HEIGHT \
+    screen://

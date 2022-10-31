@@ -3,7 +3,7 @@
 set -e
 
 if [ -z "$1" ]; then
-    echo "Usage: gm2 [bracne]"
+    echo "Usage: gm2 [branch]"
     echo
     echo "Takes the current branch, merges it into the destination branch, and pushes it"
     exit 1
@@ -16,4 +16,7 @@ BRANCH=${BRANCH:-HEAD}
 git checkout "$1"
 
 git merge --no-edit "$BRANCH"
-git push origin "$1"
+
+if [ "$2" != "nopush" ]; then
+    git push origin "$1"
+fi

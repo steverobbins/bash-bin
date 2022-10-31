@@ -1,0 +1,6 @@
+#!/bin/bash
+
+sudo systemd-resolve --flush-caches
+sudo systemd-resolve --statistics
+
+sudo /etc/init.d/dns-clean start

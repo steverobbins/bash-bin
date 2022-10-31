@@ -1,0 +1,46 @@
+#!/bin/bash
+
+set -e
+# set -x
+
+if [ -z "$1" ]; then
+    echo "Please specify an SSH host"
+    exit 1
+fi
+
+FORWARDED_PORT=3307
+
+if [ ! -z "$2" ]; then
+    FORWARDED_PORT=$2
+fi
+
+SSH_HOST=$1
+
+trap cleanup 0 1 2 3 6 15
+
+cleanup()
+{
+    ps aux | grep $FORWARDED_PORT | grep "$SSH_HOST" | grep -v grep | awk '{print $2}' | xargs kill
+}
+
+if [ ! -z "$3" ]; then
+    MYSQL_HOST="$3"
+    MYSQL_USER="$4"
+    MYSQL_PASSWORD="$5"
+else
+    CONFIG=`ssh $SSH_HOST "cat ~/.my.cnf || sudo cat /root/.my.cnf"`
+
+    MYSQL_HOST=`echo "$CONFIG" | grep host | awk '{split($0,array,"=")} END{print array[2]}'`
+    MYSQL_USER=`echo "$CONFIG" | grep user | awk '{split($0,array,"=")} END{print array[2]}'`
+    MYSQL_PASSWORD=`echo "$CONFIG" | grep password | awk '{split($0,array,"=")} END{print array[2]}'`
+
+    if [ -z "$MYSQL_HOST" ]; then
+        MYSQL_HOST='127.0.0.1'
+    fi
+fi
+
+ssh -N -L $FORWARDED_PORT:$MYSQL_HOST:3306 $SSH_HOST &
+
+sleep 2
+
+mycli -h 127.0.0.1 -P $FORWARDED_PORT -u "$MYSQL_USER" --pass "$MYSQL_PASSWORD"

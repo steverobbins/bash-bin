@@ -1,0 +1,29 @@
+#!/bin/bash
+
+set -e
+
+if [ -z "$1" ]; then
+    echo "Please specify an environment"
+    exit 1
+fi
+
+FORWARDED_PORT=3307
+
+if [ ! -z "$2" ]; then
+    FORWARDED_PORT=$2
+fi
+
+source ~/.upscribe/credentials
+
+if [ "$1" == "stage" ]; then
+    SSH_HOST=upscribe2.stage.ubuntu
+elif [ "$1" == "prod" ]; then
+    SSH_HOST=upscribe2.live2b.ubuntu
+fi
+
+DB_HOST=$(eval "echo \$UPSCRIBE2_DB_HOST_$1")
+DB_USERNAME=$(eval "echo \$UPSCRIBE2_DB_USERNAME_$1")
+DB_PASSWORD=$(eval "echo \$UPSCRIBE2_DB_PASSWORD_$1")
+DB_DATABASE=$(eval "echo \$UPSCRIBE2_DB_DATABASE_$1")
+
+rmycli $SSH_HOST $FORWARDED_PORT $DB_HOST $DB_USER $DB_PASSWORD $DB_DATABASE

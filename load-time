@@ -1,0 +1,21 @@
+#!/bin/bash
+
+echo
+echo "Analyzing $1"
+
+FORMAT="
+  Domain Resolution:  %{time_namelookup}s
+       +TCP Connect:  %{time_connect}s
+     +TLS Handshake:  %{time_appconnect}s
+      +Pre-transfer:  %{time_pretransfer}s
+          Redirects:  %{time_redirect}s
+               TTFB:  %{time_starttransfer}s
+
+     Download Speed: %{speed_download}B/s
+      Download Size: %{size_download}B
+
+              Total:  %{time_total}s
+"
+
+curl -w "$FORMAT" -o /dev/null -s "$1"
+echo

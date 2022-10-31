@@ -1,0 +1,13 @@
+#!/bin/bash
+
+mkdir -p ~/tmp
+
+cd ~/tmp
+
+wget $2 \
+    --recursive \
+    --page-requisites \
+    --domains=$1 \
+    --span-hosts \
+    --spider \
+    $1

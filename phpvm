@@ -1,0 +1,41 @@
+#!/bin/bash
+
+set -e
+# set -x
+
+if [ -z "$1" ]; then
+    echo "Please specify an PHP version (5.6, 7.2, etc)"
+    exit 1
+fi
+
+DESIRED_VERSION=$1
+CURRENT_VERSION=
+
+getCurrentVersion() {
+    PATH=`realpath /etc/alternatives/php`
+    CURRENT_VERSION="${PATH/\/usr\/bin\/php/}"
+}
+
+getCurrentVersion
+
+echo "Current PHP version $CURRENT_VERSION"
+
+if [ "$CURRENT_VERSION" = "$DESIRED_VERSION" ]; then
+    echo "Nothing to do"
+    exit
+fi
+
+if [ ! -f "/usr/bin/php$DESIRED_VERSION" ]; then
+    echo "PHP $DESIRED_VERSION is not installed. Can't continue."
+    exit 1
+fi
+
+/usr/bin/sudo unlink /etc/alternatives/php
+/usr/bin/sudo ln -s /usr/bin/php$DESIRED_VERSION /etc/alternatives/php
+
+/usr/bin/sudo perl -pi -e "s/.*-fpm.sock.*/        fastcgi_pass unix:\/run\/php\/php$DESIRED_VERSION-fpm.sock;/g" /etc/nginx/sites-enabled/html
+/usr/bin/sudo service nginx restart
+
+echo "PHP version updated"
+
+/usr/bin/php -v

@@ -4,8 +4,8 @@ import os
 import subprocess
 import sys
 
-zettrFile='/Users/steve/.config/zettr/mage-local.csv'
-zettrBin='/Users/steve/bin/zettr'
+zettrFile='~/.config/zettr/mage-local.csv'
+zettrBin='~/bin/zettr'
 
 def main():
     if len(sys.argv) != 3:

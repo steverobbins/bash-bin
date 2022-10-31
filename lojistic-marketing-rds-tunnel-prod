@@ -1,3 +1,0 @@
-#!/bin/bash
-
-ssh -N -L 3307:lojistic-marketing-prod.c41j1uwvu70d.us-east-1.rds.amazonaws.com:3306 lojistic.marketing.prod2.ubuntu

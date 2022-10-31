@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -e
+
+if [ -z "$1" ]; then
+    echo "Usage: gp2 [branch]"
+    echo
+    echo "Takes the current changes, stashes them, switches to the specified branch, and pops them"
+    exit 1
+fi
+
+git stash
+git checkout "$1"
+git stash pop

@@ -1,29 +1,26 @@
 #!/bin/bash
 
 set -e
+set -x
 
 DATETIME=`date -u +"%Y%m%d%H%M"`
-#DATETIME=201810152015
+#DATETIME=202002121906
 
 ssh fbl.prod.web1.srobbins "
 cd /var/www/vhosts/flashingblinkylights.com/current/
 /home/srobbins/bin/magento-backup.sh -m db -o /home/srobbins/backup/ -n fbl.prod.magento.$DATETIME
 "
 
-scp fbl.prod.web1.srobbins:/home/srobbins/backup/fbl.prod.magento.$DATETIME.sql.gz /Users/steve/Project/fbl/db/fbl.prod.magento.$DATETIME.sql.gz
+scp fbl.prod.web1.srobbins:/home/srobbins/backup/fbl.prod.magento.$DATETIME.sql.gz ~/Project/fbl/db/fbl.prod.magento.$DATETIME.sql.gz
 
-gzip -d /Users/steve/Project/fbl/db/fbl.prod.magento.$DATETIME.sql.gz
-
+gzip -d ~/Project/fbl/db/fbl.prod.magento.$DATETIME.sql.gz
 mysql -e "create database fbl_prod_magento_$DATETIME"
+mysql fbl_prod_magento_$DATETIME < ~/Project/fbl/db/fbl.prod.magento.$DATETIME.sql
+gzip ~/Project/fbl/db/fbl.prod.magento.$DATETIME.sql &
 
-mysql fbl_prod_magento_$DATETIME < "/Users/steve/Project/fbl/db/fbl.prod.magento.$DATETIME.sql"
+cd ~/html/fbl/
 
-cd /Users/steve/html/fbl/
+~/bin/mage-local.py fbl "fbl_prod_magento_$DATETIME"
+~/bin/zettr apply srobbins app/etc/settings.csv
 
-/Users/steve/bin/mage-local.py fbl "fbl_prod_magento_$DATETIME"
-/Users/steve/bin/zettr apply srobbins app/etc/settings.csv
-
-rsync -azv fbl.prod.web1.srobbins:/var/www/vhosts/flashingblinkylights.com/current/media/ media/ --exclude=cache --exclude=css --exclude=css_secure --exclude=js
-
-gzip /Users/steve/Project/fbl/db/fbl.prod.magento.$DATETIME.sql
-
+rsync -azv --progress fbl.prod.web1.srobbins:/var/www/vhosts/flashingblinkylights.com/current/media/ media/ --exclude=cache --exclude=css --exclude=css_secure --exclude=js --exclude=add-your-logo

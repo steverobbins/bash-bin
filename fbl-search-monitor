@@ -1,0 +1,15 @@
+#!/bin/bash
+
+if /usr/bin/curl -sS 'https://www.alightpromos.com/catalogsearch/result/?q=12132' | /bin/grep 'Mardi Gras LED Jumbo Bulbs Strand Necklaces' > /dev/null ; then
+    # /usr/bin/notify-send 'AP Search Monitor' 'Success'
+    exit
+else
+    /usr/bin/say FBL
+    date
+    echo "AP search broken"
+    #/usr/bin/notify-send 'AP Search Monitor' 'Failing'
+fi
+
+
+#|| /usr/bin/notify-send 'AP Search Monitor' 'Failing'
+#> /dev/null || /usr/bin/notify-send 'AP Search Monitor' 'Failing'

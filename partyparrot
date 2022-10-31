@@ -1,0 +1,3 @@
+#!/bin/bash
+
+terminal-parrot -loops 4 -delay 50

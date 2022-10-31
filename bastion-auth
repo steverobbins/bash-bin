@@ -2,7 +2,8 @@
 
 set -e
 
-REMOTE_IP=`curl -sS icanhazip.com`
+#REMOTE_IP="54.80.69.117"
+REMOTE_IP=`curl -sS ifconfig.me`
 IS_AUTHORIZED=0
 
 echo "Your IP: $REMOTE_IP"

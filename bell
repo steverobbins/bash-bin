@@ -1,14 +1,17 @@
 #!/bin/bash
 
-say -v "Anna" "ding ding ding" &
-say -v "Bruce" "ding ding ding" &
-say -v "Carmit" "ding ding ding" &
-say -v "Fred" "ding ding ding" &
-say -v "Junior" "ding ding ding" &
-say -v "Karen" "ding ding ding" &
-say -v "Kathy" "ding ding ding" &
-say -v "Princess" "ding ding ding" &
-say -v "Ralph" "ding ding ding" &
-say -v "Vicki" "ding ding ding" &
+# set -ex
 
-printf "\a"
+PHRASE="ding ding ding"
+
+spd-say --rate "$(( RANDOM % 100 ))" --pitch "$(( ( RANDOM % 100 ) - $(( RANDOM % 100 )) ))" --voice-type male1 "$PHRASE"
+sleep 1
+spd-say --rate "$(( RANDOM % 100 ))" --pitch "$(( ( RANDOM % 100 ) - $(( RANDOM % 100 )) ))" --voice-type male2 "$PHRASE"
+sleep 1
+spd-say --rate "$(( RANDOM % 100 ))" --pitch "$(( ( RANDOM % 100 ) - $(( RANDOM % 100 )) ))" --voice-type male3 "$PHRASE"
+exit
+spd-say --rate "$(( RANDOM % 100 ))" --pitch "$(( ( RANDOM % 100 ) - $(( RANDOM % 100 )) ))" --voice-type female1 "$PHRASE"
+spd-say --rate "$(( RANDOM % 100 ))" --pitch "$(( ( RANDOM % 100 ) - $(( RANDOM % 100 )) ))" --voice-type female2 "$PHRASE"
+spd-say --rate "$(( RANDOM % 100 ))" --pitch "$(( ( RANDOM % 100 ) - $(( RANDOM % 100 )) ))" --voice-type female3 "$PHRASE"
+spd-say --rate "$(( RANDOM % 100 ))" --pitch "$(( ( RANDOM % 100 ) - $(( RANDOM % 100 )) ))" --voice-type child_male "$PHRASE"
+spd-say --rate "$(( RANDOM % 100 ))" --pitch "$(( ( RANDOM % 100 ) - $(( RANDOM % 100 )) ))" --voice-type child_female "$PHRASE"
